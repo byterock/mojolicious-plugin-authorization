@@ -86,40 +86,40 @@ version 1.21
     }
 
 =head1 DESCRIPTION
-A very simple API implimentation of role-based access control (RBAC). This plugin is only an API you will
+A very simple API implementation of role-based access control (RBAC). This plugin is only an API you will
 have to do all the work of setting up your roles and privileges and then provide four subs that are used by 
 the plugin. 
 
 The plugin expects that the current session will be used to get the role its privileges. It also assumes that
-you have been have already been authenticated and your role set.
+you have already been authenticated and your role set.
 
-That is about it you are free to impliment any system you like.
+That is about it you are free to implement any system you like.
 
 =head1 METHODS
 
-=head2 has('privilege', $extra_data_hashref)
+=head2 has('privilege', $extra_data)
 
 Has will use the supplied C<has_priv> subroutine ref to check if the current session has the 
-the given privilege. Returns true when the session has the privilege or false otherwise. 
+given privilege. Returns true when the session has the privilege or false otherwise. 
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
 subroutine as-is.
 
-=head2 is('role',$extra_data_hashref)
+=head2 is('role',$extra_data)
 
 Is will use the supplied C<is_role> subroutine ref to check if the current session is the 
-the given role. Returns true when the session has privilege or false otherwise. 
+given role. Returns true when the session has privilege or false otherwise. 
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
 subroutine as-is.
 
-=head2 Privileges($extra_data_hashref)
+=head2 Privileges($extra_data)
 
-Privileges will use the supplied C<user_privs> subroutine and return the privileges of the current session.
+Privileges will use the supplied C<user_privs> subroutine ref and return the privileges of the current session.
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
 subroutine as-is.
 
-=head2 Role($extra_data_hashref)
+=head2 Role($extra_data)
 
-Role will use the supplied C<user_role> subroutine and return the role of the current session.
+Role will use the supplied C<user_role> subroutine ref and return the role of the current session.
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
 subroutine as-is.
 
@@ -134,9 +134,9 @@ The following options must be set for the plugin:
 
 =item is_role (REQUIRED) A coderef for checking to see if the current session is a certain role (see L</"IS ROLE">).
 
-=item user_privs (REQUIRED) A coderef for returing the privileges of the current session (see L</"PRIVILEGES">).
+=item user_privs (REQUIRED) A coderef for returning the privileges of the current session (see L</"PRIVILEGES">).
 
-=item user_role (REQUIRED) A coderef for returing the role of the current session (see L</"ROLE">).
+=item user_role (REQUIRED) A coderef for retiring the role of the current session (see L</"ROLE">).
 
 =back 
 
@@ -154,7 +154,7 @@ You must return either 0 for a fail and 1 for a pass.  This allows C<ROUTING VIA
 
 =head1 IS ROLE
 
-Is Role is used when you need to confirm that the currect session is set to the given role.
+Is Role is used when you need to confirm that the current session is set to the given role.
 The coderef you pass to the C<is_role> configuration key has the following signature:
 
     sub {
@@ -213,7 +213,7 @@ If the session does not have the 'delete_all' privilege, these routes will not b
  a 404 Not Found will be generated instead. 
 
 Another condition you can use to limit access to certain documents to only those sessions that 
-that have a role.
+have a role.
 
     $r->route('/view_all')->over(role => 'ADMIN')->to('mycontroller#view_all');
 
@@ -228,7 +228,7 @@ This behavior is similar to the "has" condition.
 
 =head1 ROUTING VIA CALLBACK
 
-It is not recommeded to route un-authorized requests to anything but a 404 page. If you do route to some sort
+It is not recommended to route un-authorized requests to anything but a 404 page. If you do route to some sort
 of 'You are not allowed page' you are telling a hacker that the URL was correct while the 404 tells them nothing.
 This is just my opinion.
 
