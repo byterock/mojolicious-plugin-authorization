@@ -1,0 +1,28 @@
+---
+abstract: 'A plugin to make authorization a bit easier'
+author:
+  - 'John Scoles <byterock@hotmail.com>'
+build_requires:
+  Module::Build: 0.38
+  Mojolicious::Lite: 0
+  Test::Mojo: 0
+  Test::More: 0
+  strict: 0
+  warnings: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.30
+  Module::Build: 0.38
+dynamic_config: 0
+generated_by: 'Dist::Zilla version 4.300007, CPAN::Meta::Converter version 2.113640'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Mojolicious-Plugin-Authentication
+requires:
+  Mojo::Base: 0
+resources:
+  bugtracker: https://github.com/byterock/mojolicious-plugin-authorization/issues
+  homepage: http://search.cpan.org/dist/Mojolicious-Plugin-Authorization/
+  repository: git://github.com/byterock/mojolicious-plugin-authorization.git
+version: 1.01
