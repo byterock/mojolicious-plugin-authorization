@@ -3,43 +3,54 @@ use strict;
 use warnings;
 use warnings FATAL => qw{ uninitialized };
 use autodie;
+use lib qw( C:\johns\Mojolicious\Plugins\Authorization\example
+             );
 # Disable IPv6, epoll and kqueue
 BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
 use Mojolicious::Lite;
 =pod
 =head1 Title
-  showoff-authentication.pl --- an example of the Mojolicious::Authentication module by Ben van Staveren
+  showoff-authorization.pl --- an example of the Mojolicious::Authentication module by John Scoles
 =head1 Invocation
-  $ perl showoff-authentication.pl daemon
+  $ perl showoff-authorization.pl daemon
 =head1 Notes
-On the minus side, this is literally the first Mojolicious program I ever
-wrote.  Forgive the non-idiomatic use.
-On the plus side, being such a simple application, this file shows off a
-number of items that I had to piece together from various sources.  Simple
-is good here.
-Authentication is persistent between browser and server startups, given the
-same secret passphrase.  Of course, the user can also simply logout, or the
-app can call $self->logout().  To timeout sessions, the doc claims one can use
-  $app->plugin('authentication', { ... });  ##
-  $app->sessions->default_expiration(3600);  ## expire after 1 hour
-but I am not sure how to use this.
+My first crack at a Mojo plugin a steal from Ben van Staveren's Authentication so I owe him and some others
+a great note of thanks
+Like Authentication this is a very a simple application. It supplies the framwork and you have to give it
+the guts which this little progam shows.
+I did not add in any Authentication as that is up to you to build. In this test I just assume you are
+autnticated on the session ans that session has a role hash on it.
 =head1 Versions
-  0.0: Tue Jan 10 14:22:52 2012
+  0.0: Apr 24 2012
 =cut
 ################################################################
-### minipasswdfile.pm lays out basic functionality for the passwdfile
-use minipasswdfile;
-my $storedpws = minipasswdfile->new('minipasswdfile.txt');
+### miniautorfile.pm lays out basic functionality for the miniautorfile
+use miniautorfile;
+my $roles = miniautorfile->new('miniautorfile.txt');
 ################################################################
 plugin 'authentication', {
-			  load_user => sub {
+			  has_priv => sub {
+			    my $self = shift;
+			    my ($priv, $extradata) = @_;
+			    my $rv= $roles->userexists($uid);
+			    say STDERR "\t[load_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
+			    return $rv; ## returns password and other stuff
+			  },
+			  is_role => sub {
+			    my $self = shift;
+			    my ($uid, $password, $extradata) = @_;
+			    my $rv = $storedpws->checkuserpw($uid, $password);
+			    say STDERR "\t[validate_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
+			    return $rv;
+			  },
+			  user_privs => sub {
 			    my $self = shift;
 			    my $uid  = shift;
 			    my $rv= $storedpws->userexists($uid);
 			    say STDERR "\t[load_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
 			    return $rv; ## returns password and other stuff
 			  },
-			  validate_user => sub {
+			  user_role => sub {
 			    my ($self, $uid, $password, $extradata) = @_;
 			    my $rv = $storedpws->checkuserpw($uid, $password);
 			    say STDERR "\t[validate_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";

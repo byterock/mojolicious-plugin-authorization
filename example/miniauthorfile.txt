@@ -1,6 +1,7 @@
-## format: username:password:privilegelevel:full name
-## last updated on Wed Jan 11 08:29:04 2012, 1326245344
-sigmund:psycho:instructor:Sigmund Freud:
-albert:relativity:instructor:Albert Einstein:
-dummy:knownothing:student:Not So Anonymous Student:
-richard:qed:instructor:Richard Feynman:
+## file format: 
+## role:privilege1:privilege2:privilege3
+## role1:privilege1:privilege3
+
+admin:create:retrieve:update:delete
+user:create:retrieve:update
+guest:retrieve
