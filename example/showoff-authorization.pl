@@ -10,7 +10,7 @@ BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
 use Mojolicious::Lite;
 =pod
 =head1 Title
-  showoff-authorization.pl --- an example of the Mojolicious::Authentication module by John Scoles
+  showoff-authorization.pl --- an example of the Mojolicious::Plugin::Authorization module by John Scoles
 =head1 Invocation
   $ perl showoff-authorization.pl daemon
 =head1 Notes
@@ -24,49 +24,45 @@ autnticated on the session ans that session has a role hash on it.
   0.0: Apr 24 2012
 =cut
 ################################################################
-### miniautorfile.pm lays out basic functionality for the miniautorfile
-use miniautorfile;
-my $roles = miniautorfile->new('miniautorfile.txt');
+### miniauthorfile.pm lays out basic functionality for the miniauthorfile
+use miniauthorfile;
+my $roles = miniauthorfile->new('miniauthorfile.txt');
 ################################################################
-plugin 'authentication', {
+plugin 'authorization', {
 			  has_priv => sub {
 			    my $self = shift;
 			    my ($priv, $extradata) = @_;
-			    my $rv= $roles->userexists($uid);
-			    say STDERR "\t[load_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
-			    return $rv; ## returns password and other stuff
+			    my $session_privs = $self->session('role');
+			    return 1
+			      if exists($session_privs->{$priv});
+			    return 0;
 			  },
 			  is_role => sub {
 			    my $self = shift;
-			    my ($uid, $password, $extradata) = @_;
-			    my $rv = $storedpws->checkuserpw($uid, $password);
-			    say STDERR "\t[validate_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
-			    return $rv;
+			    my ($role, $extradata) = @_;
+			    return 1;
 			  },
 			  user_privs => sub {
 			    my $self = shift;
-			    my $uid  = shift;
-			    my $rv= $storedpws->userexists($uid);
-			    say STDERR "\t[load_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
-			    return $rv; ## returns password and other stuff
+			    my ($extradata) = @_;
+			    return $self->session('role');
 			  },
 			  user_role => sub {
-			    my ($self, $uid, $password, $extradata) = @_;
-			    my $rv = $storedpws->checkuserpw($uid, $password);
-			    say STDERR "\t[validate_user '$uid' called.  returning '".($rv || "UNDEF-ined")."']";
-			    return $rv;
+			    my $self = shift;
+			    my ($extradata) = @_;
+			    return $self->session('role');
 			  },
 			 };
 ################################################################
 get '/' => sub {
   my $self = shift;
-  $self->stash(numusers => $storedpws->numusers(),
+  $self->stash(
 	       userid => $self->user() || "not logged in");
   $self->render('index');  ## index needs to be named to match '/'
 };
 get '/loginpanel' => sub {
   my $self = shift;
-  $self->stash(numusers => $storedpws->numusers(),
+  $self->stash(
 	       userid => $self->user() || "not logged in");
   # $self->render(template);  ## this is called automatically
 };

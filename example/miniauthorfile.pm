@@ -1,5 +1,5 @@
 package
-   miniautorfile;     # hide from PAUSE
+   miniauthorfile;     # hide from PAUSE
 use strict;
 use warnings;
 use warnings FATAL => qw{ uninitialized };
@@ -45,7 +45,8 @@ sub new {
 sub set_role {
   my $self = shift;
   my ($session,$role) = @_;
-  $session->{}
-  return ((exists($self->{$_[0]}))?($_[0]):undef);
+  #$session->{'role_privs'} = $roles{$role};
+  $session->{'role'}=$role;
+#  return ((exists($self->{$_[0]}))?($_[0]):undef);
 }
 1;

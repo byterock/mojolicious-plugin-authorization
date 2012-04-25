@@ -2,6 +2,7 @@
 ## role:privilege1:privilege2:privilege3
 ## role1:privilege1:privilege3
 
-admin:create:retrieve:update:delete
-user:create:retrieve:update
-guest:retrieve
+hypnotoad:view:herd:judge
+guest:view
+dog:herd
+judge:view:judge
