@@ -32,10 +32,13 @@ plugin 'authorization', {
 			  has_priv => sub {
 			    my $self = shift;
 			    my ($priv, $extradata) = @_;
-			    my $session_privs = $self->session('role');
+			    # warn("ping 1\n");
+			    # my $role  = $self->session('role');
+			    # my $privs = $roles->{$role};
+			    # warn("ping 2 role=".$role."\n");
 			    return 1
-			      if exists($session_privs->{$priv});
-			    return 0;
+			      # if exists($privs->{$priv});
+			    # return 0;
 			  },
 			  is_role => sub {
 			    my $self = shift;
@@ -56,40 +59,38 @@ plugin 'authorization', {
 ################################################################
 get '/' => sub {
   my $self = shift;
-  $self->stash(
-	       userid => $self->user() || "not logged in");
+  unless($self->session('role')){
+    $self->session('role'=>'guest');
+  }
   $self->render('index');  ## index needs to be named to match '/'
 };
-get '/loginpanel' => sub {
+get '/dogshow' => sub {
   my $self = shift;
-  $self->stash(
-	       userid => $self->user() || "not logged in");
-  # $self->render(template);  ## this is called automatically
+  #warn("has view=".$self->has('view'));
+  #unless ($self->has('view')) {
+  #   $self->render('index');
+   # $self->render(template);  ## this is called automatically
+  #}
+  #else{
+  #   $self->render('dogshow');
+  #}
 };
-post '/loginresponse' => sub {
+get '/view' => sub {
   my $self = shift;
-  print
-  $self->stash(loginstatus => ( ($self->authenticate($self->req->param('u'), $self->req->param('p'))) ? "success" : "failure" ),
-	       userid => $self->user() || "not logged in");
+ # $self->render(template);  ## this is called automatically
 };
-get '/logout' => sub {
+get '/heard' => sub {
   my $self = shift;
-  $self->logout();
-  $self->render(text => 'You are logged out.');
+};
+get '/judge' => sub {
+  my $self = shift;
 };
 ############ these two subs can show you what you can do now, based on authenticated status
-get '/doyouknowme' => sub {
+get '/role/:new_role' => sub {
   my $self = shift;
-  $self->stash( isauthenticated => ($self->user_exists) ? 'authenticated' : 'not authenticated',
-		userid => $self->user() || "not logged in");
 };
 ## /condition/authonly exists as a webpage ONLY after authentication
-get '/ifknown/index.html' => (authenticated => 1) => sub {
-  my $self = shift;
-  $self->render(text => 'the /ifknown/index.html page exists at the moment',
-		userid => $self->user() || "not logged in");
-};
-app->secret('Your own super-secret passphrase.');  # used for cookies and persistence
+app->secret('All GLORY to the Hypnotoad!!');  # used for cookies and persistence
 app->start();
 ################################################################
 __DATA__
@@ -97,13 +98,12 @@ __DATA__
 % layout 'default';
 % title 'Root';
 <h2> Top Index Page</h2>
-<p>The purpose of this little web app is to show an example of <a href="http://mojolicio.us/">Mojolicious</a> and its <a href="http://search.cpan.org/~madcat/Mojolicious-Plugin-Authentication/">Mojolicious::Authentication module</a> by Ben van Staveren.</p>
-<p>Start by browsing to the <a href="/loginpanel">login panel</a>.</p>
-@@ loginpanel.html.ep
+<p>The purpose of this little web app is to show an example of <a href="http://mojolicio.us/">Mojolicious</a> and its <a href="http://search.cpan.org/~madcat/Mojolicious-Plugin-Authorization/">Mojolicious::Authorization module</a> by John Scoles.</p>
+<p>Start by browsing to the <a href="/dogshow">Dog Show</a>.</p>
+@@ dogshow.html.ep
 % layout 'default';
-% title 'Login Panel';
-<p>This is your login panel.</p>
-<p>There are currently <%= $numusers %> registered users.  We hope you are one of them.</p>
+% title 'Pan Galatic Sheep Dog Trials';
+<p>Welcom "role here" to the the Pan Galatic Sheep Dog Trials.</p>
 <form action="/loginresponse" method="post">
 <table>
 <tr> <td> User </td> <td> <input type="text" name="u" /> </td> </tr>
@@ -111,22 +111,22 @@ __DATA__
 </table>
 <input type="submit" name="mysubmit" value="Click!" />
 </form>
-@@ loginresponse.html.ep
+@@ view.html.ep
 % layout 'default';
-% title 'Login Response';
-<h1>Login Response</h1>
-<p>You are now <b><%= $userid %></b>.</p>
-<p>I was told by a little gremlin that your login request returned <b><%= $loginstatus %></b>.</p>
-<ul>
-<li>You can now ask whether you are authenticated here: <a href="/doyouknowme">/doyouknowme</a>.</li>
-<li>You can now see whether an authenticated-only webpage is available to you: <a href="/ifknown/index.html">/ifknown/index.html</a>.</li>
-<li>Or you can log out again: <a href="/logout">/logout</a>.</li>
-</ul>
-@@ doyouknowme.html.ep
+% title 'View Trials';
+<h1>Enjoy the Trials</h1>
+@@ heard.html.ep
 % layout 'default';
-% title 'Do You Know Me?';
-<h1>Do you know me?</h1>
-<p>I was told by a little gremlin that you are <b><%= $isauthenticated %></b>.</p>
+% title 'Heard Some Sheep';
+<h1>Heard Some Sheep</h1>
+@@ judge.html.ep
+% layout 'default';
+% title 'Judge a Dog';
+<h1>Judge a Dog</h1>
+@@ not_allowed.html.ep
+% layout 'default';
+% title 'Page Unavailable';
+<h1>I am sorry do to interfearance from 'Eminiar VII' you cannot get to this page</h1>
 @@ layouts/default.html.ep
 <!DOCTYPE html>
 <html>
@@ -139,6 +139,5 @@ __DATA__
     <hr />
     <%= content %>
     <hr />
-  <p style="font-size:small">Logged in as user <b><%= $userid %></b> &mdash; <a href="/logout">/logout</a></p>
   </body>
 </html>

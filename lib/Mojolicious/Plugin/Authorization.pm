@@ -6,6 +6,7 @@ use Mojo::Base 'Mojolicious::Plugin';
 # The dog is good, but our real competition is the Hypnotoad.
 sub register {
     my ($self, $app, $args) = @_;
+    warn("helper register 1\n");
     $args ||= {};
     die __PACKAGE__, ": missing 'has_priv' subroutine ref in parameters\n"
         unless $args->{has_priv} && ref($args->{has_priv}) eq 'CODE';
@@ -19,6 +20,7 @@ sub register {
     my $is_role_cb     = $args->{is_role};
     my $user_privs_cb  = $args->{user_privs};
     my $user_role_cb   = $args->{user_role};
+    warn("register 2 has_priv cb=".$has_priv_cb."\n");
     $app->routes->add_condition(has => sub {
         my ($r, $c, $captures, $priv) = @_;
         return ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
@@ -33,6 +35,7 @@ sub register {
     });
     $app->helper(has => sub {
         my ($c, $priv, $extradata) = @_;
+        warn("helper has 1\n");
         return $has_priv_cb->($c, $priv, $extradata);
     });
     $app->helper(is => sub {
@@ -58,7 +61,7 @@ version 1.01
         'user_privs' => sub { ... },
         'user_role'  => sub { ... },
     });
-    if ($self->has_priv('delete_all', { optional => 'extra data stuff' })) {
+    if ($self->has('delete_all', { optional => 'extra data stuff' })) {
         ...
     }
 =head1 DESCRIPTION

@@ -31,7 +31,7 @@ sub new {
     (/\w/) or next;  ## skip empty lines
     (!/([\w :\\])/) and die "Your authorization file has a non-word character ($1), other than : and \\ on line $.: $_\n";
     my @values= split(/:/);
-    my $role = pop(@values);
+    my $role = shift(@values);
     my $privs;
     foreach my $priv (@values){
        $privs->{$priv} = 1;
