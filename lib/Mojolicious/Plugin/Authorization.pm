@@ -21,11 +21,11 @@ sub register {
     my $user_privs_cb  = $args->{user_privs};
     my $user_role_cb   = $args->{user_role};
     warn("register 2 has_priv cb=".$has_priv_cb."\n");
-    $app->routes->add_condition(has => sub {
+    $app->routes->add_condition(hasx => sub {
         my ($r, $c, $captures, $priv) = @_;
         return ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
     });
-    $app->routes->add_condition(is => sub {
+    $app->routes->add_condition(isx => sub {
         my ($r, $c, $captures, $role) = @_;
         return ($role && $is_role_cb->($c,$role)) ? 1 : 0;
     });

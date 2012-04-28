@@ -10,7 +10,7 @@ README.pod
 dist.ini
 example/miniauthorfile.pm
 example/miniauthorfile.txt
-example/showoff-authorizationn.pl
+example/showoff-authorization.pl
 lib/Mojolicious/Plugin/Authorization.pm
 t/00-load.t
 t/01-functional.t

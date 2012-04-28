@@ -3,8 +3,6 @@ use strict;
 use warnings;
 use warnings FATAL => qw{ uninitialized };
 use autodie;
-use lib qw( C:\johns\Mojolicious\Plugins\Authorization\example
-             );
 # Disable IPv6, epoll and kqueue
 BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
 use Mojolicious::Lite;
@@ -32,11 +30,11 @@ plugin 'authorization', {
 			  has_priv => sub {
 			    my $self = shift;
 			    my ($priv, $extradata) = @_;
-			    # warn("ping 1\n");
+			   # warn("ping 1\n");
 			    # my $role  = $self->session('role');
 			    # my $privs = $roles->{$role};
 			    # warn("ping 2 role=".$role."\n");
-			    return 1
+			    return 1;
 			      # if exists($privs->{$priv});
 			    # return 0;
 			  },
@@ -66,7 +64,7 @@ get '/' => sub {
 };
 get '/dogshow' => sub {
   my $self = shift;
-  #warn("has view=".$self->has('view'));
+  $self->has();
   #unless ($self->has('view')) {
   #   $self->render('index');
    # $self->render(template);  ## this is called automatically
