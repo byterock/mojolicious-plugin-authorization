@@ -64,7 +64,7 @@ get '/' => sub {
 };
 get '/dogshow' => sub {
   my $self = shift;
-  $self->has();
+  $self->has_priv('view');
   #unless ($self->has('view')) {
   #   $self->render('index');
    # $self->render(template);  ## this is called automatically
@@ -102,13 +102,6 @@ __DATA__
 % layout 'default';
 % title 'Pan Galatic Sheep Dog Trials';
 <p>Welcom "role here" to the the Pan Galatic Sheep Dog Trials.</p>
-<form action="/loginresponse" method="post">
-<table>
-<tr> <td> User </td> <td> <input type="text" name="u" /> </td> </tr>
-<tr> <td> Password </td> <td> <input type="text" name="p" /> </td> </tr>
-</table>
-<input type="submit" name="mysubmit" value="Click!" />
-</form>
 @@ view.html.ep
 % layout 'default';
 % title 'View Trials';
