@@ -30,13 +30,13 @@ plugin 'authorization', {
 			  has_priv => sub {
 			    my $self = shift;
 			    my ($priv, $extradata) = @_;
-			   # warn("ping 1\n");
-			    # my $role  = $self->session('role');
-			    # my $privs = $roles->{$role};
-			    # warn("ping 2 role=".$role."\n");
-			    return 1;
-			      # if exists($privs->{$priv});
-			    # return 0;
+			    warn("authorization 1\n");
+			     my $role  = $self->session('role');
+			     my $privs = $roles->{$role};
+			     warn("ping 2 role=".$role."\n");
+			    return 1
+			       if exists($privs->{$priv});
+			     return 0;
 			  },
 			  is_role => sub {
 			    my $self = shift;
@@ -64,14 +64,12 @@ get '/' => sub {
 };
 get '/dogshow' => sub {
   my $self = shift;
-  $self->has_priv('view');
-  #unless ($self->has('view')) {
-  #   $self->render('index');
-   # $self->render(template);  ## this is called automatically
-  #}
-  #else{
-  #   $self->render('dogshow');
-  #}
+  unless ($self->has_priv('view')) {
+     $self->render('index');
+   }
+  else{
+     $self->render('dogshow');
+  }
 };
 get '/view' => sub {
   my $self = shift;

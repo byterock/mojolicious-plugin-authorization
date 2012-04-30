@@ -36,8 +36,9 @@ sub register {
     $app->helper(has_priv => sub {
         my ($c, $priv, $extradata) = @_;
         warn("helper has 1".$priv."\n");
-        return;
-        #my $has_priv = $has_priv_cb->($c, $priv, $extradata);
+        my $has_priv = $has_priv_cb->($c, $priv, $extradata);
+        warn("helper has 1".$has_priv."\n");
+        return $has_priv;
         #return  $has_priv;
     });
     $app->helper(is => sub {
