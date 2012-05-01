@@ -91,11 +91,11 @@ subroutine as-is.
 =head2 Privileges($extra_data)
 Privileges will use the supplied C<user_privs> subroutine ref and return the privileges of the current session.
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
-subroutine as-is.
+subroutine as-is. The returned data is dependant on the supplied C<user_privs> subroutine.
 =head2 Role($extra_data)
 Role will use the supplied C<user_role> subroutine ref and return the role of the current session.
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
-subroutine as-is.
+subroutine as-is. The returned data is dependant on the supplied C<user_privs> subroutine.
 =head1 CONFIGURATION
 The following options must be set for the plugin:
 =over 4

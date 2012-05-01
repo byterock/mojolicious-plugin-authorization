@@ -17,9 +17,9 @@ a great note of thanks
 Like Authentication this is a very a simple application. It supplies the framwork and you have to give it
 the guts which this little progam shows.
 I did not add in any Authentication as that is up to you to build. In this test I just assume you are
-autnticated on the session ans that session has a role hash on it.
+authenticated on the session ans that session has a role hash on it.
 =head1 Versions
-  0.0: Apr 24 2012
+  0.1: May 01 2012
 =cut
 ################################################################
 ### miniauthorfile.pm lays out basic functionality for the miniauthorfile
@@ -41,12 +41,20 @@ plugin 'authorization', {
 			  is_role => sub {
 			    my $self = shift;
 			    my ($role, $extradata) = @_;
-			    return 1;
+			    return 0
+			       unless($self->session('role'));
+			    return 1
+			       if ($self->session('role') eq $role);
+			    return 0;
 			  },
 			  user_privs => sub {
 			    my $self = shift;
 			    my ($extradata) = @_;
-			    return $self->session('role');
+			    return []
+			       unless($self->session('role'));
+			    my $role  = $self->session('role');
+			    my $privs = $roles->{$role};
+			    return keys(%{$privs});
 			  },
 			  user_role => sub {
 			    my $self = shift;
@@ -102,8 +110,12 @@ get '/judge' => sub {
     if ($self->is_role("hypnotoad"))
 };
 ############ these two subs can show you what you can do now, based on authenticated status
-get '/role/:new_role' => sub {
+get '/my_privs/' => sub {
   my $self = shift;
+  $self->render('not_allowed')
+    unless ($self->session('role'));
+  my @privs = $self->privileges();
+  $self->stash('privs'=> \@privs);
 };
 ## /condition/authonly exists as a webpage ONLY after authentication
 app->secret('All GLORY to the Hypnotoad!!');  # used for cookies and persistence
@@ -115,10 +127,10 @@ __DATA__
 % title 'Root';
 <h2> Top Index Page</h2>
 <p>The purpose of this little web app is to show an example of <a href="http://mojolicio.us/">Mojolicious</a> and its <a href="http://search.cpan.org/~madcat/Mojolicious-Plugin-Authorization/">Mojolicious::Authorization module</a> by John Scoles.</p>
-<p>Start by browsing to the trials as a <a href="/change/guest">Guest</a>.</p>
-<p>Start by browsing to the trials as a <a href="/change/dog">Dog</a>.</p>
-<p>Start by browsing to the trials as a <a href="/change/judge">Dog Show as a Judge</a>.</p>
-<p>Start by browsing to the trials as a <a href="/change/hypnotoad">Dog Show as the Hypnotoad</a>.</p>
+<p>Go to the trials as a <a href="/change/guest">Guest</a>.</p>
+<p>Go to the trials as a <a href="/change/dog">Dog</a>.</p>
+<p>Go the trials as a <a href="/change/judge">Dog Show as a Judge</a>.</p>
+<p>Go the trials as a <a href="/change/hypnotoad">Dog Show as the Hypnotoad</a>.</p>
 @@ dogshow.html.ep
 % layout 'default';
 % title 'Pan Galatic Sheep Dog Trials';
@@ -126,7 +138,8 @@ __DATA__
 <a href="/">Go home</a><br>
 <a href="/view">View a Trial</a><br>
 <a href="/herd">Herd some Sheep</a><br>
-<a href="/judge">Judge a trial</a>
+<a href="/judge">Judge a trial</a><br>
+<a href="/my_privs">What are my Privleges</a>
 @@ view.html.ep
 % layout 'default';
 % title 'View Trials';
@@ -152,6 +165,13 @@ __DATA__
 and
 <p>4.9</p>
 from the Russian Judge
+@@ my_privs.html.ep
+% layout 'default';
+% title 'My Privleges';
+<h1>Privleges</h1>
+%foreach my $priv (@{$privs}) {
+ <%==$priv%> <br>
+%}
 @@ all_glory.html.ep
 % layout 'default';
 % title 'Judge a Dog';
