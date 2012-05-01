@@ -96,6 +96,10 @@ get '/herd' => sub {
 };
 get '/judge' => sub {
   my $self = shift;
+  $self->render('not_allowed')
+    unless ($self->has_priv('judge'));
+  $self->render('all_glory')
+    if ($self->is_role("hypnotoad"))
 };
 ############ these two subs can show you what you can do now, based on authenticated status
 get '/role/:new_role' => sub {
@@ -111,7 +115,7 @@ __DATA__
 % title 'Root';
 <h2> Top Index Page</h2>
 <p>The purpose of this little web app is to show an example of <a href="http://mojolicio.us/">Mojolicious</a> and its <a href="http://search.cpan.org/~madcat/Mojolicious-Plugin-Authorization/">Mojolicious::Authorization module</a> by John Scoles.</p>
-<p>Start by browsing to the trials as a <a href="/change/gues">Guest</a>.</p>
+<p>Start by browsing to the trials as a <a href="/change/guest">Guest</a>.</p>
 <p>Start by browsing to the trials as a <a href="/change/dog">Dog</a>.</p>
 <p>Start by browsing to the trials as a <a href="/change/judge">Dog Show as a Judge</a>.</p>
 <p>Start by browsing to the trials as a <a href="/change/hypnotoad">Dog Show as the Hypnotoad</a>.</p>
@@ -133,10 +137,29 @@ __DATA__
 % layout 'default';
 % title 'Herd Some Sheep';
 <h1>Heard Some Sheep</h1>
+<p>Woof, Bow-Wow</P>
+<p>eye-ball</p>
+<p>run~chase</p>
+<p>put sheep in pen</p>
 @@ judge.html.ep
 % layout 'default';
 % title 'Judge a Dog';
 <h1>Judge a Dog</h1>
+<p>5.8</p>
+<p>5.9</p>
+<p>5.8</p>
+<p>5.7</p>
+and
+<p>4.9</p>
+from the Russian Judge
+@@ all_glory.html.ep
+% layout 'default';
+% title 'Judge a Dog';
+<h1>Judge a Dog</h1>
+<p>And the winner is </p>
+<h1><blink>The Hypnotoad</blink></h1>
+<p>All Gloy to the Hypnotoad</p>
+Clap-Clap-Clap
 @@ not_allowed.html.ep
 % layout 'default';
 % title 'Page Unavailable';
