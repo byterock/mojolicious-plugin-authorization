@@ -76,7 +76,6 @@ get '/dogshow' => sub {
      $self->render('index');
   }
   else{
-    warn("dogshow 3\n");
      $self->stash('role_name'=> $self->role());
      $self->render('dogshow');
   }
@@ -107,7 +106,7 @@ get '/judge' => sub {
   $self->render('not_allowed')
     unless ($self->has_priv('judge'));
   $self->render('all_glory')
-    if ($self->is_role("hypnotoad"))
+    if ($self->is("hypnotoad"))
 };
 ############ these two subs can show you what you can do now, based on authenticated status
 get '/my_privs/' => sub {
@@ -129,8 +128,8 @@ __DATA__
 <p>The purpose of this little web app is to show an example of <a href="http://mojolicio.us/">Mojolicious</a> and its <a href="http://search.cpan.org/~madcat/Mojolicious-Plugin-Authorization/">Mojolicious::Authorization module</a> by John Scoles.</p>
 <p>Go to the trials as a <a href="/change/guest">Guest</a>.</p>
 <p>Go to the trials as a <a href="/change/dog">Dog</a>.</p>
-<p>Go the trials as a <a href="/change/judge">Dog Show as a Judge</a>.</p>
-<p>Go the trials as a <a href="/change/hypnotoad">Dog Show as the Hypnotoad</a>.</p>
+<p>Go the trials as a <a href="/change/judge">Judge</a>.</p>
+<p>Go the trials as The <a href="/change/hypnotoad">Hypnotoad</a>.</p>
 @@ dogshow.html.ep
 % layout 'default';
 % title 'Pan Galatic Sheep Dog Trials';

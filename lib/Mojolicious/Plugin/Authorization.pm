@@ -6,7 +6,6 @@ use Mojo::Base 'Mojolicious::Plugin';
 # The dog is good, but our real competition is the Hypnotoad.
 sub register {
     my ($self, $app, $args) = @_;
-    warn("helper register 1\n");
     $args ||= {};
     die __PACKAGE__, ": missing 'has_priv' subroutine ref in parameters\n"
         unless $args->{has_priv} && ref($args->{has_priv}) eq 'CODE';
@@ -20,11 +19,11 @@ sub register {
     my $is_role_cb     = $args->{is_role};
     my $user_privs_cb  = $args->{user_privs};
     my $user_role_cb   = $args->{user_role};
-    $app->routes->add_condition(hasx => sub {
+    $app->routes->add_condition(has_priv => sub {
         my ($r, $c, $captures, $priv) = @_;
         return ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
     });
-    $app->routes->add_condition(isx => sub {
+    $app->routes->add_condition(is => sub {
         my ($r, $c, $captures, $role) = @_;
         return ($role && $is_role_cb->($c,$role)) ? 1 : 0;
     });
@@ -36,15 +35,13 @@ sub register {
         my ($c, $priv, $extradata) = @_;
         my $has_priv = $has_priv_cb->($c, $priv, $extradata);
         return $has_priv;
-        #return  $has_priv;
     });
     $app->helper(has_privilege => sub {
         my ($c, $priv, $extradata) = @_;
         my $has_priv = $has_priv_cb->($c, $priv, $extradata);
         return $has_priv;
-        #return  $has_priv;
     });
-    $app->helper(is_role => sub {
+    $app->helper(is => sub {
         my ($c, $role, $extradata) = @_;
         return $is_role_cb->($c, $role, $extradata);
     });
@@ -147,15 +144,15 @@ it uses L<Mojolicious::Lite> and this plugin.
 =head1 ROUTING VIA CONDITION
 This plugin also exports a routing condition you can use in order to limit access to certain documents to only
 sessions that have a privilege.
-    $r->route('/delete_all')->over(has => 'delete_all')->to('mycontroller#delete_all');
-    my $delete_all_only = $r->route('/members')->over(has => 'delete_all')->to('members#delete_all');
+    $r->route('/delete_all')->over(has_priv => 'delete_all')->to('mycontroller#delete_all');
+    my $delete_all_only = $r->route('/members')->over(has_priv => 'delete_all')->to('members#delete_all');
     $delete_all_only->route('delete')->to('members#delete_all');
 If the session does not have the 'delete_all' privilege, these routes will not be considered by the dispatcher and unless you have set up a catch-all route,
  a 404 Not Found will be generated instead.
 Another condition you can use to limit access to certain documents to only those sessions that
 have a role.
-    $r->route('/view_all')->over(role => 'ADMIN')->to('mycontroller#view_all');
-    my $view_all_only = $r->route('/members')->over(role => 'view_all')->to('members#view_all');
+    $r->route('/view_all')->over(is => 'ADMIN')->to('mycontroller#view_all');
+    my $view_all_only = $r->route('/members')->over(is => 'view_all')->to('members#view_all');
     $view_all_only->route('view')->to('members#view_all');
 If the session is not the 'ADMIN' role, these routes will not be considered by the dispatcher and unless you have set up a catch-all route,
  a 404 Not Found will be generated instead.
