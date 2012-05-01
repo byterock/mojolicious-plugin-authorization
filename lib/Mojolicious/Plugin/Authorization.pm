@@ -20,7 +20,6 @@ sub register {
     my $is_role_cb     = $args->{is_role};
     my $user_privs_cb  = $args->{user_privs};
     my $user_role_cb   = $args->{user_role};
-    warn("register 2 has_priv cb=".$has_priv_cb."\n");
     $app->routes->add_condition(hasx => sub {
         my ($r, $c, $captures, $priv) = @_;
         return ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
@@ -35,13 +34,17 @@ sub register {
     });
     $app->helper(has_priv => sub {
         my ($c, $priv, $extradata) = @_;
-        warn("helper has 1".$priv."\n");
         my $has_priv = $has_priv_cb->($c, $priv, $extradata);
-        warn("helper has 1".$has_priv."\n");
         return $has_priv;
         #return  $has_priv;
     });
-    $app->helper(is => sub {
+    $app->helper(has_privilege => sub {
+        my ($c, $priv, $extradata) = @_;
+        my $has_priv = $has_priv_cb->($c, $priv, $extradata);
+        return $has_priv;
+        #return  $has_priv;
+    });
+    $app->helper(is_role => sub {
         my ($c, $role, $extradata) = @_;
         return $is_role_cb->($c, $role, $extradata);
     });
@@ -75,13 +78,13 @@ The plugin expects that the current session will be used to get the role its pri
 you have already been authenticated and your role set.
 That is about it you are free to implement any system you like.
 =head1 METHODS
-=head2 has('privilege', $extra_data)
-Has will use the supplied C<has_priv> subroutine ref to check if the current session has the
+=head2 has_priv('privilege', $extra_data) or has_privilege('privilege', $extra_data)
+Has_priv and has_privilege will use the supplied C<has_priv> subroutine ref to check if the current session has the
 given privilege. Returns true when the session has the privilege or false otherwise.
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
 subroutine as-is.
-=head2 is('role',$extra_data)
-Is will use the supplied C<is_role> subroutine ref to check if the current session is the
+=head2 is_role('role',$extra_data)
+Is_role will use the supplied C<is_role> subroutine ref to check if the current session is the
 given role. Returns true when the session has privilege or false otherwise.
 You can pass additional data along in the extra_data hashref, it will be passed to your C<has_priv>
 subroutine as-is.

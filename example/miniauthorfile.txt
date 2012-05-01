@@ -3,5 +3,5 @@
 ## role1:privilege1:privilege3
 hypnotoad:view:herd:judge
 guest:view
-dog:herd
+dog:herd:view
 judge:view:judge

@@ -28,13 +28,13 @@ my $roles = miniauthorfile->new('miniauthorfile.txt');
 ################################################################
 plugin 'authorization', {
 			  has_priv => sub {
-			    my $self = shift;
-			    my ($priv, $extradata) = @_;
-			    warn("authorization 1\n");
+			     my $self = shift;
+			     my ($priv, $extradata) = @_;
+			     return 0
+			       unless($self->session('role'));
 			     my $role  = $self->session('role');
 			     my $privs = $roles->{$role};
-			     warn("ping 2 role=".$role."\n");
-			    return 1
+			     return 1
 			       if exists($privs->{$priv});
 			     return 0;
 			  },
@@ -66,17 +66,33 @@ get '/dogshow' => sub {
   my $self = shift;
   unless ($self->has_priv('view')) {
      $self->render('index');
-   }
+  }
   else{
+    warn("dogshow 3\n");
+     $self->stash('role_name'=> $self->role());
      $self->render('dogshow');
   }
 };
-get '/view' => sub {
+get '/change/:role' => sub {
   my $self = shift;
+  my $role =  $self->param('role');
+  $roles->set_role($self->session,$role);
+  $self->stash('role_name'=> $self->role());
+  $self->render('dogshow');
  # $self->render(template);  ## this is called automatically
 };
-get '/heard' => sub {
+get '/view' => sub {
   my $self = shift;
+  unless ($self->has_priv('view')) {
+     $self->render('index');
+  }
+ # $self->render(template);  ## this is called automatically
+};
+get '/herd' => sub {
+  my $self = shift;
+  unless ($self->has_priv('herd')) {
+     $self->render('not_allowed');
+  }
 };
 get '/judge' => sub {
   my $self = shift;
@@ -95,18 +111,27 @@ __DATA__
 % title 'Root';
 <h2> Top Index Page</h2>
 <p>The purpose of this little web app is to show an example of <a href="http://mojolicio.us/">Mojolicious</a> and its <a href="http://search.cpan.org/~madcat/Mojolicious-Plugin-Authorization/">Mojolicious::Authorization module</a> by John Scoles.</p>
-<p>Start by browsing to the <a href="/dogshow">Dog Show</a>.</p>
+<p>Start by browsing to the trials as a <a href="/change/gues">Guest</a>.</p>
+<p>Start by browsing to the trials as a <a href="/change/dog">Dog</a>.</p>
+<p>Start by browsing to the trials as a <a href="/change/judge">Dog Show as a Judge</a>.</p>
+<p>Start by browsing to the trials as a <a href="/change/hypnotoad">Dog Show as the Hypnotoad</a>.</p>
 @@ dogshow.html.ep
 % layout 'default';
 % title 'Pan Galatic Sheep Dog Trials';
-<p>Welcom "role here" to the the Pan Galatic Sheep Dog Trials.</p>
+<p>Welcome "<%= $role_name %>" to the the Pan Galatic Sheep Dog Trials.</p>
+<a href="/">Go home</a><br>
+<a href="/view">View a Trial</a><br>
+<a href="/herd">Herd some Sheep</a><br>
+<a href="/judge">Judge a trial</a>
 @@ view.html.ep
 % layout 'default';
 % title 'View Trials';
 <h1>Enjoy the Trials</h1>
-@@ heard.html.ep
+<p>He's good.</p>
+<p>But our real compition is the Hypnotoad</p>
+@@ herd.html.ep
 % layout 'default';
-% title 'Heard Some Sheep';
+% title 'Herd Some Sheep';
 <h1>Heard Some Sheep</h1>
 @@ judge.html.ep
 % layout 'default';
@@ -115,7 +140,7 @@ __DATA__
 @@ not_allowed.html.ep
 % layout 'default';
 % title 'Page Unavailable';
-<h1>I am sorry do to interfearance from 'Eminiar VII' you cannot get to this page</h1>
+<h1>I am sorry do to interferance from suicide booths on 'Eminiar VII' you cannot get to this page</h1>
 @@ layouts/default.html.ep
 <!DOCTYPE html>
 <html>

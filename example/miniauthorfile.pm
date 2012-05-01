@@ -34,6 +34,7 @@ sub new {
     my $role = shift(@values);
     my $privs;
     foreach my $priv (@values){
+       $priv =~ s/\R//g;
        $privs->{$priv} = 1;
     }
     $roles{$role}= $privs;
