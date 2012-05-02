@@ -27,41 +27,42 @@ use miniauthorfile;
 my $roles = miniauthorfile->new('miniauthorfile.txt');
 ################################################################
 plugin 'authorization', {
-			  has_priv => sub {
-			     my $self = shift;
-			     my ($priv, $extradata) = @_;
-			     return 0
-			       unless($self->session('role'));
-			     my $role  = $self->session('role');
-			     my $privs = $roles->{$role};
-			     return 1
-			       if exists($privs->{$priv});
-			     return 0;
-			  },
-			  is_role => sub {
-			    my $self = shift;
-			    my ($role, $extradata) = @_;
-			    return 0
-			       unless($self->session('role'));
-			    return 1
-			       if ($self->session('role') eq $role);
-			    return 0;
-			  },
-			  user_privs => sub {
-			    my $self = shift;
-			    my ($extradata) = @_;
-			    return []
-			       unless($self->session('role'));
-			    my $role  = $self->session('role');
-			    my $privs = $roles->{$role};
-			    return keys(%{$privs});
-			  },
-			  user_role => sub {
-			    my $self = shift;
-			    my ($extradata) = @_;
-			    return $self->session('role');
-			  },
-			 };
+
+  has_priv => sub {
+     my $self = shift;
+     my ($priv, $extradata) = @_;
+     return 0
+       unless($self->session('role'));
+     my $role  = $self->session('role');
+     my $privs = $roles->{$role};
+     return 1
+       if exists($privs->{$priv});
+     return 0;
+  },
+  is_role => sub {
+    my $self = shift;
+    my ($role, $extradata) = @_;
+    return 0
+       unless($self->session('role'));
+    return 1
+       if ($self->session('role') eq $role);
+   return 0;
+  },
+  user_privs => sub {
+    my $self = shift;
+    my ($extradata) = @_;
+    return []
+       unless($self->session('role'));
+    my $role  = $self->session('role');
+    my $privs = $roles->{$role};
+    return keys(%{$privs});
+  },
+  user_role => sub {
+    my $self = shift;
+    my ($extradata) = @_;
+    return $self->session('role');
+  },
+ };
 ################################################################
 get '/' => sub {
   my $self = shift;

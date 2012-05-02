@@ -8,56 +8,57 @@ plan tests => 38;
 # testing code starts here
 use Mojolicious::Lite;
 use Test::Mojo;
-plugin 'authentication', {
-    autoload_user => 1,
-    load_user => sub {
-        my $self = shift;
-        my $uid  = shift;
-        return {
-            'username' => 'foo',
-            'password' => 'bar',
-            'name'     => 'Foo'
-            } if($uid eq 'userid' || $uid eq 'useridwithextradata');
-        return undef;
-    },
-    validate_user => sub {
-        my $self = shift;
-        my $username = shift || '';
-        my $password = shift || '';
-        my $extradata = shift || {};
-        return 'useridwithextradata' if($username eq 'foo' && $password eq 'bar' && ( $extradata->{'ohnoes'} || '' ) eq 'itsameme');
-        return 'userid' if($username eq 'foo' && $password eq 'bar');
-        return undef;
-    },
+my %roles = (role1=>{priv1=>1},
+             role2=>{privv1=>1,priv2=>1});
+plugin 'authorization', {
+ has_priv => sub {
+     my $self = shift;
+     my ($priv, $extradata) = @_;
+     return 0
+      unless($self->session('role'));
+     my $role  = $self->session('role');
+     my $privs = $roles{$role};
+     return 1
+       if exists($privs->{$priv});
+     return 0;
+  },
+  is_role => sub {
+    my $self = shift;
+    my ($role, $extradata) = @_;
+    return 0
+       unless($self->session('role'));
+    return 1
+       if ($self->session('role') eq $role);
+    return 0;
+  },
+  user_privs => sub {
+    my $self = shift;
+    my ($extradata) = @_;
+    return []
+       unless($self->session('role'));
+    my $role  = $self->session('role');
+    my $privs = $roles{$role};
+    return keys(%{$privs});
+  },
+  user_role => sub {
+    my $self = shift;
+    my ($extradata) = @_;
+    return $self->session('role');
+   },
+   
 };
 get '/' => sub {
     my $self = shift;
+    $self->session('role'=>'role1');
     $self->render(text => 'index page');
 };
-post '/login' => sub {
-    my $self = shift;
-    my $u    = $self->req->param('u');
-    my $p    = $self->req->param('p');
-    $self->render(text => ($self->authenticate($u, $p)) ? 'ok' : 'failed');
-};
-post '/login2' => sub {
-    my $self = shift;
-    my $u    = $self->req->param('u');
-    my $p    = $self->req->param('p');
-    $self->render(text => ($self->authenticate($u, $p, { 'ohnoes' => 'itsameme' })) ? 'ok' : 'failed');
-};
-get '/authonly' => sub {
-    my $self = shift;
-    $self->render(text => ($self->is_user_authenticated) ? 'authenticated' : 'not authenticated');
-};
-get '/condition/authonly' => (authenticated => 1) => sub {
-    my $self = shift;
-    $self->render(text => 'authenticated condition');
-};
-get '/logout' => sub {
-    my $self = shift;
-    $self->logout();
-    $self->render(text => 'logout');
+get '/change/:role' => sub {
+  my $self = shift;
+  my $role =  $self->param('role');
+  $self->session('role'=>$role);
+  $self->stash('role_name'=> $self->role());
+  $self->render('role');
+ # $self->render(template);  ## this is called automatically
 };
 my $t = Test::Mojo->new;
 $t->get_ok('/')->status_is(200)->content_is('index page');
