@@ -3,8 +3,8 @@
    "author" : [
       "John Scoles <byterock@hotmail.com>"
    ],
-   "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300007, CPAN::Meta::Converter version 2.113640",
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.38, CPAN::Meta::Converter version 2.110930",
    "license" : [
       "perl_5"
    ],
@@ -16,7 +16,12 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Module::Build" : "0.38"
+            "Module::Build" : "0.38",
+            "Mojolicious::Lite" : 0,
+            "Test::Mojo" : 0,
+            "Test::More" : 0,
+            "strict" : 0,
+            "warnings" : 0
          }
       },
       "configure" : {
@@ -29,28 +34,19 @@
          "requires" : {
             "Mojo::Base" : 0
          }
-      },
-      "test" : {
-         "requires" : {
-            "Mojolicious::Lite" : 0,
-            "Test::Mojo" : 0,
-            "Test::More" : 0,
-            "strict" : 0,
-            "warnings" : 0
-         }
+      }
+   },
+   "provides" : {
+      "Mojolicious::Plugin::Authorization" : {
+         "file" : "lib/Mojolicious/Plugin/Authorization.pm",
+         "version" : "1.01"
       }
    },
    "release_status" : "stable",
    "resources" : {
-      "bugtracker" : {
-         "web" : "https://github.com/byterock/mojolicious-plugin-authorization/issues"
-      },
-      "homepage" : "http://search.cpan.org/dist/Mojolicious-Plugin-Authorization/",
-      "repository" : {
-         "type" : "git",
-         "url" : "git://github.com/byterock/mojolicious-plugin-authorization.git",
-         "web" : "https://github.com/byterock/mojolicious-plugin-authorization"
-      }
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ]
    },
    "version" : "1.01"
 }

@@ -12,17 +12,19 @@ build_requires:
 configure_requires:
   ExtUtils::MakeMaker: 6.30
   Module::Build: 0.38
-dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.300007, CPAN::Meta::Converter version 2.113640'
+dynamic_config: 1
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.110930'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
-name: Mojolicious-Plugin-Authentication
+name: Mojolicious-Plugin-Authorization
+provides:
+  Mojolicious::Plugin::Authorization:
+    file: lib/Mojolicious/Plugin/Authorization.pm
+    version: 1.01
 requires:
   Mojo::Base: 0
 resources:
-  bugtracker: https://github.com/byterock/mojolicious-plugin-authorization/issues
-  homepage: http://search.cpan.org/dist/Mojolicious-Plugin-Authorization/
-  repository: git://github.com/byterock/mojolicious-plugin-authorization.git
+  license: http://dev.perl.org/licenses/
 version: 1.01
