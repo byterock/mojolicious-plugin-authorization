@@ -4,12 +4,12 @@ use warnings;
 # Disable IPv6, epoll and kqueue
 BEGIN { $ENV{MOJO_NO_IPV6} = $ENV{MOJO_POLL} = 1 }
 use Test::More;
-plan tests => 38;
+plan tests => 42;
 # testing code starts here
 use Mojolicious::Lite;
 use Test::Mojo;
 my %roles = (role1=>{priv1=>1},
-             role2=>{privv1=>1,priv2=>1});
+             role2=>{priv1=>1,priv2=>1});
 plugin 'authorization', {
  has_priv => sub {
      my $self = shift;
@@ -119,4 +119,10 @@ $t->get_ok('/privilege1')->status_is(200)->content_is('Priv 1');
 $t->get_ok('/privilege2')->status_is(200)->content_is('fail');
 $t->get_ok('/myrole')->status_is(200)->content_is('role1');
 $t->get_ok('/myprivs')->status_is(200)->content_is('priv1');
-$t->get_ok('/')->status_is(200)->content_is('index page');
+$t->get_ok('/change/role2')->status_is(200)->content_is('role2');
+$t->get_ok('/priv1')->status_is(200)->content_is('Priv 1');
+$t->get_ok('/priv2')->status_is(200)->content_is('Priv 2');
+$t->get_ok('/privilege1')->status_is(200)->content_is('Priv 1');
+$t->get_ok('/privilege2')->status_is(200)->content_is('Priv 2');
+$t->get_ok('/myrole')->status_is(200)->content_is('role2');
+$t->get_ok('/myprivs')->status_is(200)->content_is('priv1:priv2');
