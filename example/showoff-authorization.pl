@@ -17,7 +17,7 @@ a great note of thanks
 Like Authentication this is a very a simple application. It supplies the framwork and you have to give it
 the guts which this little progam shows.
 I did not add in any Authentication as that is up to you to build. In this test I just assume you are
-authenticated on the session ans that session has a role hash on it.
+authenticated on the session and that session has a role hash on it.
 =head1 Versions
   0.1: May 01 2012
 =cut
