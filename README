@@ -2,7 +2,7 @@ NAME
 Mojolicious::Plugin::Authorization - A plugin to make Authorization a bit easier
 
 VERSION
-version 1.02
+version 1.03
 
 SYNOPSIS
     use Mojolicious::Plugin::Authorization
