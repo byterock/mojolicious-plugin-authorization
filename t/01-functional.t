@@ -53,45 +53,27 @@ get '/' => sub {
 };
 get '/priv1' => sub {
     my $self = shift;
-    unless ($self->has_priv('priv1')) {
-      $self->render(text=>'fail');
-   }
-   $self->render(text=>'Priv 1');
+    $self->render(text=> $self->has_priv('priv1') ? 'Priv 1' : 'fail');
 };
 get '/priv2' => sub {
     my $self = shift;
-    unless ($self->has_priv('priv2')) {
-      $self->render(text=>'fail');
-   }
-   $self->render(text=>'Priv 2');
+    $self->render(text=> $self->has_priv('priv2') ? 'Priv 2' : 'fail');
 };
 get '/privilege1' => sub {
     my $self = shift;
-    unless ($self->has_privilege('priv1')) {
-      $self->render(text=>'fail');
-   }
-   $self->render(text=>'Priv 1');
+    $self->render(text=> $self->has_privilege('priv1') ? 'Priv 1' : 'fail');
 };
 get '/privilege2' => sub {
     my $self = shift;
-    unless ($self->has_privilege('priv2')) {
-      $self->render(text=>'fail');
-   }
-   $self->render(text=>'Priv 2');
+    $self->render(text=> $self->has_privilege('priv2') ? 'Priv 2' : 'fail');
 };
 get '/role1' => sub {
     my $self = shift;
-    unless ($self->role('role1')) {
-      $self->render(text=>'fail');
-   }
-   $self->render(text=>'Role 1');
+    $self->render(text=> $self->role('role1') ? 'Role 1' : 'fail');
 };
 get '/role2' => sub {
     my $self = shift;
-    unless ($self->role('role2')) {
-      $self->render(text=>'fail');
-   }
-   $self->render(text=>'Role 2');
+    $self->render(text=> $self->role('role2') ? 'Role 2' : 'fail');
 };
 get '/change/:role' => sub {
     my $self = shift;
