@@ -22,7 +22,7 @@ name: Mojolicious-Plugin-Authorization
 provides:
   Mojolicious::Plugin::Authorization:
     file: lib/Mojolicious/Plugin/Authorization.pm
-    version: 1.02
+    version: 1.03.01
 requires:
   Mojo::Base: 0
 resources:
