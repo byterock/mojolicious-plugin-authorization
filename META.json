@@ -39,7 +39,7 @@
    "provides" : {
       "Mojolicious::Plugin::Authorization" : {
          "file" : "lib/Mojolicious/Plugin/Authorization.pm",
-         "version" : "1.03.01"
+         "version" : "1.0301"
       }
    },
    "release_status" : "stable",
