@@ -88,7 +88,7 @@ That is about it you are free to implement any system you like.
 
 =head2 has_priv('privilege', $extra_data) or has_privilege('privilege', $extra_data)
 
-'hHas_priv'' and ''has_privilege'' will use the supplied C<has_priv> subroutine ref to check if the current session has the
+'has_priv' and 'has_privilege' will use the supplied C<has_priv> subroutine ref to check if the current session has the
 given privilege. Returns true when the session has the privilege or false otherwise.
 You can pass additional data along in the extra_data hashref and it will be passed to your C<has_priv>
 subroutine as-is.
@@ -102,7 +102,7 @@ subroutine as-is.
 
 =head2 privileges($extra_data)
 
-'pPrivileges'' will use the supplied C<user_privs> subroutine ref and return the privileges of the current session.
+'privileges' will use the supplied C<user_privs> subroutine ref and return the privileges of the current session.
 You can pass additional data along in the extra_data hashref and it will be passed to your C<user_privs>
 subroutine as-is. The returned data is dependant on the supplied C<user_privs> subroutine.
 
