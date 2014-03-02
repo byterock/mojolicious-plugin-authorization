@@ -38,7 +38,7 @@ plugin 'authorization', {
        unless($self->session('role'));
     my $role  = $self->session('role');
     my $privs = $roles{$role};
-    return keys(%{$privs});
+    return sort keys(%{$privs});
   },
   user_role => sub {
     my $self = shift;
