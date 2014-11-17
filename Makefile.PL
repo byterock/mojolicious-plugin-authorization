@@ -30,6 +30,8 @@ my %WriteMakefileArgs = (
   "META_MERGE" => {
     "resources" => {
       "repository" => 'https://github.com/byterock/mojolicious-plugin-authorization',
+      "bugtracker" => 'https://github.com/byterock/mojolicious-plugin-authorization/issues',
+      "homepage"   => 'https://metacpan.org/module/Mojolicious::Plugin::Authorization',
     },
   },
 );
