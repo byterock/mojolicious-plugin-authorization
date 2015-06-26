@@ -23,6 +23,10 @@ sub register {
         my ($r, $c, $captures, $priv) = @_;
         return ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
     });
+    $app->routes->add_condition(is_role => sub {
+        my ($r, $c, $captures, $role) = @_;
+        return ($role && $is_role_cb->($c,$role)) ? 1 : 0;
+    });
     $app->routes->add_condition(is => sub {
         my ($r, $c, $captures, $role) = @_;
         return ($role && $is_role_cb->($c,$role)) ? 1 : 0;
@@ -42,6 +46,10 @@ sub register {
         return $has_priv;
     });
     $app->helper(is => sub {
+        my ($c, $role, $extradata) = @_;
+        return $is_role_cb->($c, $role, $extradata);
+    });
+    $app->helper(is_role => sub {
         my ($c, $role, $extradata) = @_;
         return $is_role_cb->($c, $role, $extradata);
     });
@@ -93,9 +101,9 @@ given privilege. Returns true when the session has the privilege or false otherw
 You can pass additional data along in the extra_data hashref and it will be passed to your C<has_priv>
 subroutine as-is.
 
-=head2 is('role',$extra_data)
+=head2 is('role',$extra_data) / is_role('role,$extra_data)
 
-'is' will use the supplied C<is_role> subroutine ref to check if the current session is the
+'is' / 'is_role' will use the supplied C<is_role> subroutine ref to check if the current session is the
 given role. Returns true when the session has privilege or false otherwise.
 You can pass additional data along in the extra_data hashref and it will be passed to your C<is_role>
 subroutine as-is.
@@ -140,9 +148,9 @@ The coderef you pass to the C<has_priv> configuration key has the following sign
 
 You must return either 0 for a fail and 1 for a pass.  This allows C<ROUTING VIA CONDITION> to work correctly.
 
-=head2 IS
+=head2 IS / IS ROLE
 
-'is' is used when you need to confirm that the current session is set to the given role.
+'is' / 'is_role' is used when you need to confirm that the current session is set to the given role.
 The coderef you pass to the C<is_role> configuration key has the following signature:
 
     sub {
