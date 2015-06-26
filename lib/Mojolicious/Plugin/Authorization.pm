@@ -104,13 +104,13 @@ subroutine as-is.
 
 'privileges' will use the supplied C<user_privs> subroutine ref and return the privileges of the current session.
 You can pass additional data along in the extra_data hashref and it will be passed to your C<user_privs>
-subroutine as-is. The returned data is dependant on the supplied C<user_privs> subroutine.
+subroutine as-is. The returned data is dependent on the supplied C<user_privs> subroutine.
 
 =head2 role($extra_data)
 
 'role' will use the supplied C<user_role> subroutine ref and return the role of the current session.
 You can pass additional data along in the extra_data hashref and it will be passed to your C<user_role>
-subroutine as-is. The returned data is dependant on the supplied C<user_role> subroutine.
+subroutine as-is. The returned data is dependent on the supplied C<user_role> subroutine.
 
 =head1 CONFIGURATION
 
