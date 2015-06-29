@@ -7,52 +7,46 @@ use Mojo::Base 'Mojolicious::Plugin';
 sub register {
     my ($self, $app, $args) = @_;
     $args ||= {};
-    die __PACKAGE__, ": missing 'has_priv' subroutine ref in parameters\n"
-        unless $args->{has_priv} && ref($args->{has_priv}) eq 'CODE';
-    die __PACKAGE__, ": missing 'is_role' subroutine ref in parameters\n"
-        unless $args->{is_role} && ref($args->{is_role}) eq 'CODE';
-    die __PACKAGE__, ": missing 'user_privs' subroutine ref in parameters\n"
-        unless $args->{user_privs} && ref($args->{user_privs}) eq 'CODE';
-    die __PACKAGE__, ": missing 'user_role' subroutine ref in parameters\n"
-        unless $args->{user_role} && ref($args->{user_role}) eq 'CODE';
+    for my $sub_ref ( qw/ has_priv is_role user_privs user_role / ) {
+        die __PACKAGE__, ": missing '$sub_ref' subroutine ref in parameters\n"
+            unless $args->{$sub_ref} && ref($args->{$sub_ref}) eq 'CODE';
+    }
     my $has_priv_cb    = $args->{has_priv};
     my $is_role_cb     = $args->{is_role};
     my $user_privs_cb  = $args->{user_privs};
     my $user_role_cb   = $args->{user_role};
+    my $fail_render    = $args->{fail_render};
     $app->routes->add_condition(has_priv => sub {
         my ($r, $c, $captures, $priv) = @_;
-        return ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
+        my $res = ($priv && $has_priv_cb->($c,$priv)) ? 1 : 0;
+        $c->render( %$fail_render ) if $fail_render && ! $res;
+        return $res;
     });
-    $app->routes->add_condition(is_role => sub {
-        my ($r, $c, $captures, $role) = @_;
-        return ($role && $is_role_cb->($c,$role)) ? 1 : 0;
-    });
-    $app->routes->add_condition(is => sub {
-        my ($r, $c, $captures, $role) = @_;
-        return ($role && $is_role_cb->($c,$role)) ? 1 : 0;
-    });
+    for my $helper_name ( qw/ is_role is / ) {
+        $app->routes->add_condition($helper_name => sub {
+            my ($r, $c, $captures, $role) = @_;
+            my $res = ($role && $is_role_cb->($c,$role)) ? 1 : 0;
+            $c->render( %$fail_render ) if $fail_render && ! $res;
+            return $res;
+        });
+    }
     $app->helper(privileges => sub {
         my ($c, $user, $extradata) = @_;
         return $user_privs_cb->($c, $user, $extradata);
     });
-    $app->helper(has_priv => sub {
-        my ($c, $priv, $extradata) = @_;
-        my $has_priv = $has_priv_cb->($c, $priv, $extradata);
-        return $has_priv;
-    });
-    $app->helper(has_privilege => sub {
-        my ($c, $priv, $extradata) = @_;
-        my $has_priv = $has_priv_cb->($c, $priv, $extradata);
-        return $has_priv;
-    });
-    $app->helper(is => sub {
-        my ($c, $role, $extradata) = @_;
-        return $is_role_cb->($c, $role, $extradata);
-    });
-    $app->helper(is_role => sub {
-        my ($c, $role, $extradata) = @_;
-        return $is_role_cb->($c, $role, $extradata);
-    });
+    for my $helper_name ( qw/ has_priv has_privilege / ) {
+        $app->helper($helper_name => sub {
+            my ($c, $priv, $extradata) = @_;
+            my $has_priv = $has_priv_cb->($c, $priv, $extradata);
+            return $has_priv;
+        });
+    }
+    for my $helper_name ( qw/ is is_role / ) {
+        $app->helper($helper_name => sub {
+            my ($c, $role, $extradata) = @_;
+            return $is_role_cb->($c, $role, $extradata);
+        });
+    }
     $app->helper(role => sub {
        my ($c, $user, $extradata) = @_;
         return $user_role_cb->($c, $user, $extradata);
@@ -74,10 +68,11 @@ version 1.03
 
     use Mojolicious::Plugin::Authorization
     $self->plugin('Authorization' => {
-        'has_priv'   => sub { ... },
-        'is_role'    => sub { ... },
-        'user_privs' => sub { ... },
-        'user_role'  => sub { ... },
+        'has_priv'    => sub { ... },
+        'is_role'     => sub { ... },
+        'user_privs'  => sub { ... },
+        'user_role'   => sub { ... },
+        'fail_render' => { status => 401, json => { ... } },
     });
     if ($self->has_priv('delete_all', { optional => 'extra data stuff' })) {
         ...
@@ -128,11 +123,19 @@ The following options must be set for the plugin:
 
 =item has_priv (REQUIRED) A coderef for checking to see if the current session has a privilege (see L</"HAS PRIV">).
 
-=item is_role (REQUIRED) A coderef for checking to see if the current session is a certain role (see L</"IS ROLE">).
+=item is_role (REQUIRED) A coderef for checking to see if the current session is a certain role (see L</"IS / IS ROLE">).
 
 =item user_privs (REQUIRED) A coderef for returning the privileges of the current session (see L</"PRIVILEGES">).
 
 =item user_role (REQUIRED) A coderef for retiring the role of the current session (see L</"ROLE">).
+
+=back
+
+The following options are not required but allow greater control:
+
+=over 4
+
+=item fail_render (OPTIONAL) A hashref for setting the status code and rendering json/text/etc when routing fails (see L</"ROUTING VIA CALLBACK">).
 
 =back
 
@@ -185,7 +188,7 @@ The coderef you pass to the C<user_privs> configuration key has the following si
         ...
         return $role;
     }
-    
+
 You can return anything you want. It would normally be just a scalar but you are free to
 return a scalar, hashref, arrayref, blessed object, or undef.
 
@@ -223,6 +226,13 @@ It is not recommended to route un-authorized requests to anything but a 404 page
 of 'You are not allowed page' you are telling a hacker that the URL was correct while the 404 tells them nothing.
 This is just my opinion.
 
+However in the case of publicly documented APIs returning a 404 when priv/role checks fails can confuse users, so
+you can override the default 404 status on failure by supplying a 'fail_render' value in the plugin config. This
+will be passed to the Mojolicious ->render method when the has_priv/is/is_role routing fails. For example, to
+return a status code of 401 with JSON:
+
+    fail_render => { status => 401, json => { error => 'Denied' } },
+
 =head1 SEE ALSO
 
 L<Mojolicious::Sessions>, L<Mojocast 3: Authorization|http://mojocasts.com/e3#>
@@ -256,15 +266,15 @@ You can also look for information at:
 Ben van Staveren   (madcat)
 
     -   For 'Mojolicious::Plugin::Authentication' which I used as a guide in writing up this one.
-    
+
 Chuck Finley
 
     -   For staring me off on this.
-    
+
 Abhijit Menon-Sen
 
     -   For the routing suggestions
-    
+
 Roland Lammel
 
     -   For some other good suggestions

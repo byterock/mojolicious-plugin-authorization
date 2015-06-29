@@ -14,6 +14,8 @@ example/showoff-authorization.pl
 lib/Mojolicious/Plugin/Authorization.pm
 t/00-load.t
 t/01-functional.t
+t/03-no_config.t
+t/04-full_fat_app.t
 t/manifest.t
 t/release-cpan-changes.t
 weaver.ini

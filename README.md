@@ -10,10 +10,11 @@ version 1.03
 
     use Mojolicious::Plugin::Authorization
     $self->plugin('Authorization' => {
-        'has_priv'   => sub { ... },
-        'is_role'    => sub { ... },
-        'user_privs' => sub { ... },
-        'user_role'  => sub { ... },
+        'has_priv'    => sub { ... },
+        'is_role'     => sub { ... },
+        'user_privs'  => sub { ... },
+        'user_role'   => sub { ... },
+        'fail_render' => { status => 401, json => { ... } },
     });
     if ($self->has_priv('delete_all', { optional => 'extra data stuff' })) {
         ...
@@ -48,22 +49,26 @@ subroutine as-is.
 
 'privileges' will use the supplied `user_privs` subroutine ref and return the privileges of the current session.
 You can pass additional data along in the extra\_data hashref and it will be passed to your `user_privs`
-subroutine as-is. The returned data is dependant on the supplied `user_privs` subroutine.
+subroutine as-is. The returned data is dependent on the supplied `user_privs` subroutine.
 
 ## role($extra\_data)
 
 'role' will use the supplied `user_role` subroutine ref and return the role of the current session.
 You can pass additional data along in the extra\_data hashref and it will be passed to your `user_role`
-subroutine as-is. The returned data is dependant on the supplied `user_role` subroutine.
+subroutine as-is. The returned data is dependent on the supplied `user_role` subroutine.
 
 # CONFIGURATION
 
 The following options must be set for the plugin:
 
 - has\_priv (REQUIRED) A coderef for checking to see if the current session has a privilege (see ["HAS PRIV"](#has-priv)).
-- is\_role (REQUIRED) A coderef for checking to see if the current session is a certain role (see ["IS ROLE"](#is-role)).
+- is\_role (REQUIRED) A coderef for checking to see if the current session is a certain role (see ["IS / IS ROLE"](#is-is-role)).
 - user\_privs (REQUIRED) A coderef for returning the privileges of the current session (see ["PRIVILEGES"](#privileges)).
 - user\_role (REQUIRED) A coderef for retiring the role of the current session (see ["ROLE"](#role)).
+
+The following options are not required but allow greater control:
+
+- fail\_render (OPTIONAL) A hashref for setting the status code and rendering json/text/etc when routing fails (see ["ROUTING VIA CALLBACK"](#routing-via-callback)).
 
 ## HAS PRIV
 
@@ -114,7 +119,6 @@ The coderef you pass to the `user_privs` configuration key has the following sig
         ...
         return $role;
     }
-    
 
 You can return anything you want. It would normally be just a scalar but you are free to
 return a scalar, hashref, arrayref, blessed object, or undef.
@@ -153,6 +157,13 @@ It is not recommended to route un-authorized requests to anything but a 404 page
 of 'You are not allowed page' you are telling a hacker that the URL was correct while the 404 tells them nothing.
 This is just my opinion.
 
+However in the case of publicly documented APIs returning a 404 when priv/role checks fails can confuse users, so
+you can override the default 404 status on failure by supplying a 'fail\_render' value in the plugin config. This
+will be passed to the Mojolicious ->render method when the has\_priv/is/is\_role routing fails. For example, to
+return a status code of 401 with JSON:
+
+    fail_render => { status => 401, json => { error => 'Denied' } },
+
 # SEE ALSO
 
 [Mojolicious::Sessions](https://metacpan.org/pod/Mojolicious::Sessions), [Mojocast 3: Authorization](http://mojocasts.com/e3#)
@@ -180,17 +191,14 @@ You can also look for information at:
 Ben van Staveren   (madcat)
 
     -   For 'Mojolicious::Plugin::Authentication' which I used as a guide in writing up this one.
-    
 
 Chuck Finley
 
     -   For staring me off on this.
-    
 
 Abhijit Menon-Sen
 
     -   For the routing suggestions
-    
 
 Roland Lammel
 
