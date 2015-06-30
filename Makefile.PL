@@ -9,8 +9,8 @@ my %WriteMakefileArgs = (
     "Mojolicious::Lite" => 0,
     "Test::Mojo" => 0,
     "Test::More" => 0,
-    'Test::Exception' => 0.32,
-    'Test::Deep'      => 0.113,
+    "Test::Exception" => 0.32,
+    "Test::Deep"      => 0.113,
     "strict" => 0,
     "warnings" => 0
   },
