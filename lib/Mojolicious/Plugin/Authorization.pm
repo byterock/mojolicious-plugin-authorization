@@ -1,6 +1,6 @@
 package Mojolicious::Plugin::Authorization;
 BEGIN {
-  $Mojolicious::Plugin::Authorization::VERSION = '1.0302';
+  $Mojolicious::Plugin::Authorization::VERSION = '1.04';
 }
 use Mojo::Base 'Mojolicious::Plugin';
 # The dog is good, but our real competition is the Hypnotoad.
@@ -62,7 +62,7 @@ Mojolicious::Plugin::Authorization - A plugin to make Authorization a bit easier
 
 =head1 VERSION
 
-version 1.03
+version 1.04
 
 =head1 SYNOPSIS
 
@@ -96,9 +96,9 @@ given privilege. Returns true when the session has the privilege or false otherw
 You can pass additional data along in the extra_data hashref and it will be passed to your C<has_priv>
 subroutine as-is.
 
-=head2 is('role',$extra_data) / is_role('role,$extra_data)
+=head2 is('role',$extra_data) or is_role('role,$extra_data)
 
-'is' / 'is_role' will use the supplied C<is_role> subroutine ref to check if the current session is the
+'is' and 'is_role' will use the supplied C<is_role> subroutine ref to check if the current session is the
 given role. Returns true when the session has privilege or false otherwise.
 You can pass additional data along in the extra_data hashref and it will be passed to your C<is_role>
 subroutine as-is.
@@ -139,7 +139,7 @@ The following options are not required but allow greater control:
 
 =back
 
-=head2 HAS PRIV
+=head2 HAS PRIV / HAS PRIVILEGE
 
 'has_priv' is used when you need to confirm that the current session has the given privilege.
 The coderef you pass to the C<has_priv> configuration key has the following signature:
@@ -279,6 +279,10 @@ Roland Lammel
 
     -   For some other good suggestions
 
+Lee Johnson
+
+    -   For the latest updates for version 1.04
+    
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2012 John Scoles.

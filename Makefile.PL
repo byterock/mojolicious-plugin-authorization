@@ -25,8 +25,7 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Mojo::Base" => 0
   },
-  "VERSION" => "1.03.02",
-  "test" => {
+  "VERSION" => "1.04" => {
     "TESTS" => "t/*.t"
   },
   "META_MERGE" => {

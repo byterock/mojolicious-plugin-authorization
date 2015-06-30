@@ -19,8 +19,8 @@ my %module_build_args = (
     "John Scoles <byterock\@hotmail.com>"
   ],
   "dist_name" => "Mojolicious-Plugin-Authorization",
-  "dist_version" => "1.03.01",
-  "license" => "perl",
+  "dist_version" => "1.04",
+	"license" => "perl",
   "module_name" => "Mojolicious::Plugin::Authorization",
   "recommends" => {},
   "recursive_test_files" => 1,
