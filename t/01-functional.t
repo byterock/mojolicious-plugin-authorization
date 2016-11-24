@@ -102,7 +102,7 @@ get '/myrole' => sub {
 get '/myprivs' =>  sub {
     my $self = shift;
     my @privs = $self->privileges();
-    my $priv = join(':',@privs);
+    my $priv = join(':', sort @privs);
     $self->render(text=>$priv);
 };
 my $t = Test::Mojo->new;
