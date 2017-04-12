@@ -15,3 +15,6 @@ Changes in 1.04
     Add is_role helper and condion as well as test for same from leejo https://github.com/leejo
     Add fail_render option on 404 and test from leejo https://github.com/leejo
     Typo fixes
+Changes in 1.05
+    Typo fixes
+    Fix for internal calling profile of 'privileges' and 'role'

@@ -1,6 +1,6 @@
 package Mojolicious::Plugin::Authorization;
 BEGIN {
-  $Mojolicious::Plugin::Authorization::VERSION = '1.04';
+  $Mojolicious::Plugin::Authorization::VERSION = '1.05';
 }
 use Mojo::Base 'Mojolicious::Plugin';
 # The dog is good, but our real competition is the Hypnotoad.
@@ -31,8 +31,8 @@ sub register {
         });
     }
     $app->helper(privileges => sub {
-        my ($c, $user, $extradata) = @_;
-        return $user_privs_cb->($c, $user, $extradata);
+        my ($c, $extradata) = @_;
+        return $user_privs_cb->($c, $extradata);
     });
     for my $helper_name ( qw/ has_priv has_privilege / ) {
         $app->helper($helper_name => sub {
@@ -48,8 +48,8 @@ sub register {
         });
     }
     $app->helper(role => sub {
-       my ($c, $user, $extradata) = @_;
-        return $user_role_cb->($c, $user, $extradata);
+       my ($c, $extradata) = @_;
+        return $user_role_cb->($c, $extradata);
     });
 }
 1;
@@ -62,7 +62,7 @@ Mojolicious::Plugin::Authorization - A plugin to make Authorization a bit easier
 
 =head1 VERSION
 
-version 1.04
+version 1.05
 
 =head1 SYNOPSIS
 
@@ -96,7 +96,7 @@ given privilege. Returns true when the session has the privilege or false otherw
 You can pass additional data along in the extra_data hashref and it will be passed to your C<has_priv>
 subroutine as-is.
 
-=head2 is('role',$extra_data) or is_role('role,$extra_data)
+=head2 is('role',$extra_data) or is_role('role',$extra_data)
 
 'is' and 'is_role' will use the supplied C<is_role> subroutine ref to check if the current session is the
 given role. Returns true when the session has privilege or false otherwise.
@@ -127,7 +127,7 @@ The following options must be set for the plugin:
 
 =item user_privs (REQUIRED) A coderef for returning the privileges of the current session (see L</"PRIVILEGES">).
 
-=item user_role (REQUIRED) A coderef for retiring the role of the current session (see L</"ROLE">).
+=item user_role (REQUIRED) A coderef for returning the role of the current session (see L</"ROLE">).
 
 =back
 
