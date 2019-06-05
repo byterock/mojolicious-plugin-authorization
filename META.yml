@@ -3,12 +3,13 @@ abstract: 'A plugin to make authorization a bit easier'
 author:
   - 'John Scoles <byterock@hotmail.com>'
 build_requires:
-  Module::Build: 0.38
-  Mojolicious::Lite: 0
-  Test::Mojo: 0
-  Test::More: 0
-  strict: 0
-  warnings: 0
+  Module::Build : 0.38,
+  Mojolicious::Lite : 0,
+  Test::Mojo : 0,
+  Test::More : 0,
+  Test::Exception : 0.32,
+  strict : 0,
+  warnings : 0
 configure_requires:
   ExtUtils::MakeMaker: 6.30
   Module::Build: 0.38
