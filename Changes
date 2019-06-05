@@ -18,3 +18,5 @@ Changes in 1.04
 Changes in 1.05
     Typo fixes
     Fix for internal calling profile of 'privileges' and 'role'
+    Added extra data via conditional routing by Matt Altus committed on 19 Mar 
+    Remove Build.PL from MANIFEST not needed
