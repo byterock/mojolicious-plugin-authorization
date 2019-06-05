@@ -288,7 +288,11 @@ Roland Lammel
 Lee Johnson
 
     -   For the latest updates for version 1.04
+    
+Matt Altus
 
+    -   For the Allow extra data via conditional routing enhancement 
+    
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2012 John Scoles.
