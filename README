@@ -3,7 +3,7 @@ NAME
     bit easier
 
 VERSION
-    version 1.03
+    version 1.06
 
 SYNOPSIS
         use Mojolicious::Plugin::Authorization
@@ -197,6 +197,10 @@ ACKNOWLEDGEMENTS
     Roland Lammel
 
         -   For some other good suggestions
+    
+    Dmitry Karasik
+    
+         -  Fix for depricated 'over' command
 
 LICENSE AND COPYRIGHT
     Copyright 2012 John Scoles. This program is free software; you can
