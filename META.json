@@ -41,7 +41,7 @@
    "provides" : {
       "Mojolicious::Plugin::Authorization" : {
          "file" : "lib/Mojolicious/Plugin/Authorization.pm",
-         "version" : "1.05"
+         "version" : "1.06"
       }
    },
    "release_status" : "stable",
@@ -50,5 +50,5 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "1.05"
+   "version" : "1.06"
 }

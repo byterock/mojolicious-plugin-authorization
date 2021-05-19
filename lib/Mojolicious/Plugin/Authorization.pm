@@ -1,6 +1,6 @@
 package Mojolicious::Plugin::Authorization;
 BEGIN {
-  $Mojolicious::Plugin::Authorization::VERSION = '1.05';
+  $Mojolicious::Plugin::Authorization::VERSION = '1.06';
 }
 use Mojo::Base 'Mojolicious::Plugin';
 # The dog is good, but our real competition is the Hypnotoad.
@@ -66,7 +66,7 @@ Mojolicious::Plugin::Authorization - A plugin to make Authorization a bit easier
 
 =head1 VERSION
 
-version 1.05
+version 1.06
 
 =head1 SYNOPSIS
 
