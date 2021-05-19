@@ -25,27 +25,27 @@ sub startup {
   );
 
   $self->routes->any('/cake/make')
-    ->over(has_priv => 'cake:eat')
+    ->requires(has_priv => 'cake:eat')
     ->to('Public#eat_cake')
   ;
 
   $self->routes->any('/cake/eat')
-    ->over(is_role => 'chef')
+    ->requires(is_role => 'chef')
     ->to('Public#make_cake')
   ;
 
   $self->routes->any('/cake/have')
-    ->over(has_priv => ['cake', { 'and' => 'eat' }])
+    ->requires(has_priv => ['cake', { 'and' => 'eat' }])
     ->to('Public#eat_cake')
   ;
 
   $self->routes->any('/cake/eat')
-    ->over(is_role => 'chef')
+    ->requires(is_role => 'chef')
     ->to('Public#make_cake')
   ;
 
   $self->routes->any('/cake/letthem')
-    ->over(is_role => ['chef', {'eat' => 'brioche'}])
+    ->requires(is_role => ['chef', {'eat' => 'brioche'}])
     ->to('Public#make_cake')
   ;
 }

@@ -133,8 +133,8 @@ it uses [Mojolicious::Lite](https://metacpan.org/pod/Mojolicious::Lite) and this
 This plugin also exports a routing condition you can use in order to limit access to certain documents to only
 sessions that have a privilege.
 
-    $r->route('/delete_all')->over(has_priv => 'delete_all')->to('mycontroller#delete_all');
-    my $delete_all_only = $r->route('/members')->over(has_priv => 'delete_all')->to('members#delete_all');
+    $r->route('/delete_all')->requires(has_priv => 'delete_all')->to('mycontroller#delete_all');
+    my $delete_all_only = $r->route('/members')->requires(has_priv => 'delete_all')->to('members#delete_all');
     $delete_all_only->route('delete')->to('members#delete_all');
 
 If the session does not have the 'delete\_all' privilege, these routes will not be considered by the dispatcher and unless you have set up a catch-all route,
@@ -143,8 +143,8 @@ If the session does not have the 'delete\_all' privilege, these routes will not 
 Another condition you can use to limit access to certain documents to only those sessions that
 have a role.
 
-    $r->route('/view_all')->over(is => 'ADMIN')->to('mycontroller#view_all');
-    my $view_all_only = $r->route('/members')->over(is => 'view_all')->to('members#view_all');
+    $r->route('/view_all')->requires(is => 'ADMIN')->to('mycontroller#view_all');
+    my $view_all_only = $r->route('/members')->requires(is => 'view_all')->to('members#view_all');
     $view_all_only->route('view')->to('members#view_all');
 
 If the session is not the 'ADMIN' role, these routes will not be considered by the dispatcher and unless you have set up a catch-all route,
