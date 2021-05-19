@@ -23,9 +23,9 @@ name: Mojolicious-Plugin-Authorization
 provides:
   Mojolicious::Plugin::Authorization:
     file: lib/Mojolicious/Plugin/Authorization.pm
-    version: 1.05
+    version: 1.06
 requires:
   Mojo::Base: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 1.05
+version: 1.06
