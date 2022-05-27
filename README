@@ -45,14 +45,14 @@ METHODS
     'privileges' will use the supplied `user_privs' subroutine ref and
     return the privileges of the current session. You can pass additional
     data along in the extra_data hashref and it will be passed to your
-    `user_privs' subroutine as-is. The returned data is dependant on the
+    `user_privs' subroutine as-is. The returned data is dependent on the
     supplied `user_privs' subroutine.
 
   role($extra_data)
     'role' will use the supplied `user_role' subroutine ref and return the
     role of the current session. You can pass additional data along in the
     extra_data hashref and it will be passed to your `user_role' subroutine
-    as-is. The returned data is dependant on the supplied `user_role'
+    as-is. The returned data is dependent on the supplied `user_role'
     subroutine.
 
 CONFIGURATION
@@ -200,7 +200,7 @@ ACKNOWLEDGEMENTS
     
     Dmitry Karasik
     
-         -  Fix for depricated 'over' command
+         -  Fix for deprecated 'over' command
 
 LICENSE AND COPYRIGHT
     Copyright 2012 John Scoles. This program is free software; you can

@@ -14,8 +14,8 @@ use Mojolicious::Lite;
 =head1 Notes
 My first crack at a Mojo plugin a steal from Ben van Staveren's Authentication so I owe him and some others
 a great note of thanks
-Like Authentication this is a very a simple application. It supplies the framwork and you have to give it
-the guts which this little progam shows.
+Like Authentication this is a very a simple application. It supplies the framework and you have to give it
+the guts which this little program shows.
 I did not add in any Authentication as that is up to you to build. In this test I just assume you are
 authenticated on the session and that session has a role hash on it.
 =head1 Versions
@@ -133,13 +133,13 @@ __DATA__
 <p>Go the trials as The <a href="/change/hypnotoad">Hypnotoad</a>.</p>
 @@ dogshow.html.ep
 % layout 'default';
-% title 'Pan Galatic Sheep Dog Trials';
-<p>Welcome "<%= $role_name %>" to the the Pan Galatic Sheep Dog Trials.</p>
+% title 'Pan Galactic Sheep Dog Trials';
+<p>Welcome "<%= $role_name %>" to the the Pan Galactic Sheep Dog Trials.</p>
 <a href="/">Go home</a><br>
 <a href="/view">View a Trial</a><br>
 <a href="/herd">Herd some Sheep</a><br>
 <a href="/judge">Judge a trial</a><br>
-<a href="/my_privs">What are my Privleges</a>
+<a href="/my_privs">What are my Privileges</a>
 @@ view.html.ep
 % layout 'default';
 % title 'View Trials';
@@ -168,7 +168,7 @@ from the Russian Judge
 @@ my_privs.html.ep
 % layout 'default';
 % title 'My Privleges';
-<h1>Privleges</h1>
+<h1>Privileges</h1>
 %foreach my $priv (@{$privs}) {
  <%==$priv%> <br>
 %}
@@ -183,7 +183,7 @@ Clap-Clap-Clap
 @@ not_allowed.html.ep
 % layout 'default';
 % title 'Page Unavailable';
-<h1>I am sorry do to interferance from suicide booths on 'Eminiar VII' you cannot get to this page</h1>
+<h1>I am sorry do to interference from suicide booths on 'Eminiar VII' you cannot get to this page</h1>
 @@ layouts/default.html.ep
 <!DOCTYPE html>
 <html>
